@@ -1,41 +1,111 @@
+# main.py
+
 import csv
 
+from weather_models import (
+    TemperatureData,
+    HumidityData,
+    WindSpeedData
+)
+
+from visualizer import WeatherVisualizer
+
+
+# -----------------------------------
+# CSV DATU NOLASĪŠANA
+# -----------------------------------
+
+data = []
+
 with open("weather_data.csv", "r") as file:
+
     reader = csv.DictReader(file)
 
     for row in reader:
-        print(row)
-
-from weather_models import WeatherData
-
-temp = WeatherData("Riga", [1,2,3], [4,5,7])
-
-average = temp.calculate_average()
-
-print(average)    
-#testē - polimorfisms, jo 'show_data_type()' uzvedas dažādi dažādos objektos. Ktra mantojošā klase uz šo modeli reaģē atšķirīgi
-from weather_models import *
-
-temp = TemperatureData("Riga", [1,2], [4,5])
-humid = HumidityData("Riga", [1,2], [80,82])
-wind = WindSpeedData("Riga", [1,2], [12,15])
-
-temp.show_data_type()
-humid.show_data_type()
-wind.show_data_type() 
-
-from visualizer import WeatherVisualizer #testē -importē klasi WeatherVisualizer no faila visualizer.py, lai izmantotu tās funkcionalitāti datu vizualizācijai.
+        data.append(row)
 
 
-days = [1,2,3,4,5]
-temps = [4,5,7,6,8]
+# -----------------------------------
+# LIETOTĀJA IZVĒLE
+# -----------------------------------
 
+city = input("Choose city (Riga / Oslo / Rome): ")
+
+data_type = input(
+    "Choose data type (temperature / humidity / wind_speed): "
+)
+
+
+# -----------------------------------
+# DATU FILTRĒŠANA
+# -----------------------------------
+
+days = []
+values = []
+
+for row in data:
+
+    if row["city"] == city:
+
+        days.append(int(row["day"]))
+
+        values.append(int(row[data_type]))
+
+
+# -----------------------------------
+# OBJEKTU IZVEIDE
+# -----------------------------------
+
+if data_type == "temperature":
+
+    weather_object = TemperatureData(
+        city,
+        days,
+        values
+    )
+
+elif data_type == "humidity":
+
+    weather_object = HumidityData(
+        city,
+        days,
+        values
+    )
+
+else:
+
+    weather_object = WindSpeedData(
+        city,
+        days,
+        values
+    )
+
+
+# -----------------------------------
+# POLIMORFISMS
+# -----------------------------------
+
+weather_object.show_data_type()
+
+
+# -----------------------------------
+# VIDĒJĀ VĒRTĪBA
+# -----------------------------------
+
+average = weather_object.calculate_average()
+
+print(f"Average value: {average}")
+
+
+# -----------------------------------
+# GRAFIKA IZVEIDE
+# -----------------------------------
 
 graph = WeatherVisualizer(
     days,
-    temps,
-    "Riga Temperature",
-    "Temperature"
+    values,
+    f"{city} {data_type}",
+    data_type
 )
 
 graph.show_graph()

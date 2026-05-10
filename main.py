@@ -22,4 +22,20 @@ wind = WindSpeedData("Riga", [1,2], [12,15])
 
 temp.show_data_type()
 humid.show_data_type()
-wind.show_data_type()
+wind.show_data_type() 
+
+from visualizer import WeatherVisualizer #testē -importē klasi WeatherVisualizer no faila visualizer.py, lai izmantotu tās funkcionalitāti datu vizualizācijai.
+
+
+days = [1,2,3,4,5]
+temps = [4,5,7,6,8]
+
+
+graph = WeatherVisualizer(
+    days,
+    temps,
+    "Riga Temperature",
+    "Temperature"
+)
+
+graph.show_graph()

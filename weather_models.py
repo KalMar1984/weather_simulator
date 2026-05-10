@@ -5,7 +5,26 @@ class WeatherData:
         self.city = city
         self.days = days
         self.values = values
-        
-        #izveidojam metodi, kas apskata laika apstākļu vārtības un aprēķina to vidējo vērtību. Šī metode tiek saukta calculate_average, un tā izmanto sum() funkciju, lai saskaitītu visas vērtības self.values sarakstā, un dalot ar len(self.values), lai iegūtu vidējo vērtību.
+
+    #izveidojam metodi, kas apskata laika apstākļu vērtības un aprēķina to vidējo vērtību.
     def calculate_average(self):
         return sum(self.values) / len(self.values)
+
+#izveidojam apakšklasi, kas manto no bāzes klases WeatherData un pievieno jaunu metodi, lai parādītu datu tipu.
+#Šī klase tiek saukta TemperatureData, un tā satur metodi show_data_type, kas izvada "Temperature data" uz ekrāna.
+class TemperatureData(WeatherData):
+    def show_data_type(self):
+        print("Temperature data")
+temp = TemperatureData("Riga", [1,2,3], [4,5,7])
+
+print(temp.calculate_average()) #izsauc calculate_average metodi no bāzes klases WeatherData, lai aprēķinātu vidējo vērtību no self.values saraksta, kas ir [4,5,7]. Rezultāts būs 5.0, jo (4 + 5 + 7) / 3 = 16 / 3 = 5.0.
+
+class HumidityData(WeatherData): 
+
+    def show_data_type(self):
+        print("Humidity data")
+
+class WindSpeedData(WeatherData):
+
+    def show_data_type(self):
+        print("Wind speed data")

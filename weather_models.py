@@ -6,3 +6,6 @@ class WeatherData:
         self.days = days
         self.values = values
         
+        #izveidojam metodi, kas apskata laika apstākļu vārtības un aprēķina to vidējo vērtību. Šī metode tiek saukta calculate_average, un tā izmanto sum() funkciju, lai saskaitītu visas vērtības self.values sarakstā, un dalot ar len(self.values), lai iegūtu vidējo vērtību.
+    def calculate_average(self):
+        return sum(self.values) / len(self.values)

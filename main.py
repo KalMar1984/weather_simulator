@@ -5,3 +5,11 @@ with open("weather_data.csv", "r") as file:
 
     for row in reader:
         print(row)
+
+from weather_models import WeatherData
+
+temp = WeatherData("Riga", [1,2,3], [4,5,7])
+
+average = temp.calculate_average()
+
+print(average)      #notestēta metode, kas aprēķina vidējo vērtību, izmantojot sum() funkciju, lai saskaitītu visas vērtības self.values sarakstā, un dalot ar len(self.values), lai iegūtu vidējo vērtību.

@@ -9,8 +9,7 @@ class WeatherData:
     #izveidojam metodi, kas apskata laika apstākļu vērtības un aprēķina to vidējo vērtību.
     def calculate_average(self):
         if len(self.values) == 0:
-            print(f"Kļūda: Pilsēta '{self.city}' vai datu tips neatrasts CSV failā!")
-            return 0
+            raise ZeroDivisionError(f"Kļūda: Pilsēta '{self.city}' vai datu tips neatrasts CSV failā!")
         return sum(self.values) / len(self.values)
 
 #izveidojam apakšklasi, kas manto no bāzes klases WeatherData un pievieno jaunu metodi, lai parādītu datu tipu.

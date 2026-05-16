@@ -71,7 +71,7 @@ class TestWeatherProgram(unittest.TestCase):
 
                 riga_data.append(row)
 
-        self.assertEqual(len(riga_data), 7)
+        self.assertEqual(len(riga_data), 8)
 
 
     # -----------------------------------

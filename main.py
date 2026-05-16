@@ -2,8 +2,6 @@
 # IMPORTS
 # -----------------------------------
 
-import csv
-
 from weather_models import ( #importējam klases no weather_models.py, kas ir atbildīgas par dažādiem laika apstākļu datiem, piemēram, temperatūras, mitruma un vēja ātruma datiem. Šīs klases satur metodes, kas ļauj aprēķināt vidējo vērtību un parādīt datu tipu.
     TemperatureData,
     HumidityData,
@@ -14,42 +12,56 @@ from visualizer import WeatherVisualizer #importējam klasi WeatherVisualizer no
 
 
 # -----------------------------------
-# CSV DATU NOLASĪŠANA
+# DATU AVOTA IZVĒLE
 # -----------------------------------
 
 from data_loader import DataLoader #izveidojam klasi DataLoader no data_loader.py, kas ir atbildīga par datu ielādi no CSV faila.
+from api_client import get_city_forecast_from_meteo
 
 
-loader = DataLoader("weather_data.csv") #izveidojam objektu no klases DataLoader, kas ir atbildīga par datu ielādi no CSV faila.
+def is_api_city(city):
+    """Return True for cities that should be fetched from the Open-Meteo API."""
+    return city.strip().lower() in ("rīga", "riga", "liepāja", "liepaja", "daugavpils")
 
-data = loader.load_data() #izveidojam sarakstu data, kas satur visus nolasītos datus no CSV faila.
+
+def load_local_city_data(city, data_type):
+    """Load city data from the local CSV file and return days and values."""
+    loader = DataLoader("weather_data.csv")
+    rows = loader.load_data()
+    days = []
+    values = []
+    normalized_city = city.strip().lower()
+
+    for row in rows:
+        if row["city"].strip().lower() == normalized_city:
+            days.append(int(row["day"]))
+            values.append(int(row[data_type]))
+
+    return days, values
+
+
+def load_city_data(city, data_type):
+    """Select the source for city data: API for some cities, CSV for the rest."""
+    if is_api_city(city):
+        return get_city_forecast_from_meteo(city, data_type)
+    return load_local_city_data(city, data_type)
+
 
 # -----------------------------------
 # LIETOTĀJA IZVĒLE
 # -----------------------------------
 
-city = input("Choose city (Riga / Oslo / Rome): ") 
+city = input("Choose city (Rīga / Liepāja / Daugavpils / Oslo / Rome): ") 
 
 data_type = input(
     "Choose data type (temperature / humidity / wind_speed): " 
 )
 
-
 # -----------------------------------
-# DATU FILTRĒŠANA
+# DATU IEGUVE
 # -----------------------------------
 
-days = [] #izveido tukšu sarakstu days, kurā tiks saglabātas dienas, kas atbilst lietotāja izvēlētajai pilsētai un datu tipam.
-values = [] #izveido tukšu sarakstu values, kurā tiks saglabātas laika apstākļu vērtības, kas atbilst lietotāja izvēlētajai pilsētai un datu tipam.
-
-for row in data: #iterē cauri katrai rindiņai (row) nolasītajos datos no CSV faila, izmantojot for ciklu. Katrs row ir vārdnīca, kas satur datus no attiecīgās rindiņas CSV failā. Šis cikls tiek izmantots, lai filtrētu datus un saglabātu tikai tos, kas atbilst lietotāja izvēlētajai pilsētai (city) un datu tipam (data_type).
-
-    if row["city"] == city: #pārbauda, vai "city" vērtība rindiņā (row) atbilst lietotāja izvēlētajai pilsētai (city). Ja tā ir vienāda, tad tiek izpildīts iekšējais kods, kas pievieno attiecīgās dienas un vērtības sarakstiem days un values.
-
-        days.append(int(row["day"])) #pievieno "day" vērtību no rindiņas (row) sarakstam days, izmantojot append metodi. Šī vērtība tiek pārveidota par veselu skaitli (int), jo CSV failā tā var būt saglabāta kā teksts.
-
-        values.append(int(row[data_type])) #pievieno "data_type" vērtību no rindiņas (row) sarakstam values, izmantojot append metodi.
-
+days, values = load_city_data(city, data_type)
 
 # -----------------------------------
 # OBJEKTU IZVEIDE
